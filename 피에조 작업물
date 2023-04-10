@@ -1,0 +1,47 @@
+#define NOTE_B4  493
+#define NOTE_E5  659
+#define NOTE_Gb5 830
+#define NOTE_Db5 622
+#define NOTE_Ab4  466
+#define NOTE_C5  523
+
+// 피에조 부저 핀
+int buzzerPin = 8;
+
+// 노트 배열 (각 음표의 길이는 1/8)
+int notes[] = {
+  NOTE_B4, NOTE_E5, NOTE_B4, NOTE_E5, NOTE_B4, NOTE_E5, NOTE_B4, NOTE_E5,
+  NOTE_Gb5, NOTE_Db5, NOTE_C5, NOTE_B4, NOTE_C5, NOTE_B4, NOTE_Ab4, NOTE_B4
+};
+
+// 각 음표의 길이 배열
+int noteDurations[] = {
+  8, 8, 8, 8, 8, 8, 8, 8, 4, 4, 4, 8, 8, 8, 4, 4
+};
+
+void setup() {
+  // 피에조 부저 핀 초기화
+  pinMode(buzzerPin, OUTPUT);
+}
+
+void loop() {
+  // 모든 음표에 대하여
+  for (int i = 0; i < sizeof(notes) / sizeof(notes[0]); i++) {
+    // 음표의 길이 계산
+    int duration = 1000 / noteDurations[i];
+    
+    // 음표가 소리나도록 피에조 부저를 울림
+    tone(buzzerPin, notes[i], duration);
+
+    // 음표 길이만큼 대기
+    delay(duration * 1.3);
+
+    // 피에조 부저 정지
+    noTone(buzzerPin);
+    
+    // 음표 사이 대기
+    delay(duration / 2);
+  }
+}
+
+          
