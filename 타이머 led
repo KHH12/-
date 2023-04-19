@@ -1,0 +1,50 @@
+const int ledPin = 13;    // LED 핀
+const int buttonPin = 2;  // 버튼 핀
+const int buzzerPin = 8;  // 피에조 핀
+
+int ledState = LOW;       // LED 상태 변수
+int buttonState;          // 버튼 상태 변수
+int lastButtonState = LOW;// 이전 버튼 상태 변수
+unsigned long lastDebounceTime = 0; // 버튼 디바운스 시간 변수
+unsigned long debounceDelay = 50;   // 버튼 디바운스 딜레이
+
+unsigned long timerInterval = 5000; // 타이머 간격
+unsigned long previousMillis = 0;   // 이전 시간 변수
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(buzzerPin, OUTPUT);
+}
+
+void loop() {
+  // 버튼 디바운스
+  int reading = digitalRead(buttonPin);
+  if (reading != lastButtonState) {
+    lastDebounceTime = millis();
+  }
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    if (reading != buttonState) {
+      buttonState = reading;
+      if (buttonState == LOW) {
+        ledState = !ledState;
+        previousMillis = millis();
+      }
+    }
+  }
+  lastButtonState = reading;
+
+  // LED와 피에조 부저 제어
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis < (timerInterval - 2000)) {
+    digitalWrite(ledPin, ledState);
+    noTone(buzzerPin); // 피에조 부저 소리 없애기
+  } else if (currentMillis - previousMillis < timerInterval) {
+    digitalWrite(ledPin, ledState);
+    tone(buzzerPin, 5000); // 피에조 부저 1000Hz로 울리기
+  } else {
+    ledState = LOW;
+    digitalWrite(ledPin, ledState);
+    noTone(buzzerPin); // 피에조 부저 소리 없애기
+  }
+}
